@@ -1,6 +1,13 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
+  "packageRules": [
+    {
+      "groupName": "SDWebImage",
+      "managers": [
+        "cocoapods"
+      ],
+      "packageNames": [
+        "SDWebImageSwiftUI",
+      ]
+    }
   ]
 }

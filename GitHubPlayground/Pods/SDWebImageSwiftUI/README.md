@@ -111,8 +111,9 @@ github "SDWebImage/SDWebImageSwiftUI"
 var body: some View {
     WebImage(url: URL(string: "https://nokiatech.github.io/heif/content/images/ski_jump_1440x960.heic"))
     // Supports options and context, like `.delayPlaceholder` to show placeholder only when error
-    .onSuccess { image, cacheType in
+    .onSuccess { image, data, cacheType in
         // Success
+        // Note: Data exist only when queried from disk cache or network. Use `.queryMemoryData` if you really need data
     }
     .resizable() // Resizable like SwiftUI.Image, you must use this modifier or the view will use the image bitmap size
     .placeholder(Image(systemName: "photo")) // Placeholder Image
@@ -121,8 +122,7 @@ var body: some View {
         Rectangle().foregroundColor(.gray)
     }
     .indicator(.activity) // Activity Indicator
-    .animation(.easeInOut(duration: 0.5)) // Animation Duration
-    .transition(.fade) // Fade Transition
+    .transition(.fade(duration: 0.5)) // Fade Transition with duration
     .scaledToFit()
     .frame(width: 300, height: 300, alignment: .center)
 }
@@ -211,11 +211,11 @@ var body: some View {
 
 Why we have two different View types here, is because of current SwiftUI limit. But we're aimed to provide best solution for all use cases.
 
-If you don't need animated image, prefer to use `WebImage` firstly. Which behaves the seamless as built-in SwiftUI View. If SwiftUI works, it works.
+If you don't need animated image, prefer to use `WebImage` firstly. Which behaves the seamless as built-in SwiftUI View. If SwiftUI works, it works. If SwiftUI doesn't work, it either :)
 
-If you need simple animated image, use `WebImage`. Which provide the basic animated image support. But it does not support progressive animation rendering, if you don't care about this.
+If you need simple animated image, use `WebImage`. Which provide the basic animated image support. But it does not support progressive animation rendering, nor vector image, if you don't care about this.
 
-If you need powerful animated image, `AnimatedImage` is the one to choose. Remember it supports static image as well, you don't need to check the format, just use as it.
+If you need powerful animated image, `AnimatedImage` is the one to choose. Remember it supports static image as well, you don't need to check the format, just use as it. Also, some powerful feature like UIKit/AppKit tint color, vector image, symbol image configuration, tvOS layered image, only available in `AnimatedImage` but not currently in SwfitUI.
 
 But, because `AnimatedImage` use `UIViewRepresentable` and driven by UIKit, currently there may be some small incompatible issues between UIKit and SwiftUI layout and animation system, or bugs related to SwiftUI itself. We try our best to match SwiftUI behavior, and provide the same API as `WebImage`, which make it easy to switch between these two types if needed.
 

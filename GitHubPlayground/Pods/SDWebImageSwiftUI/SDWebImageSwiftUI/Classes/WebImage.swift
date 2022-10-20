@@ -60,10 +60,9 @@ public struct WebImage : View {
     }
     
     public var body: some View {
-        // this prefetch the memory cache of image, to immediately render it on screen
-        // this solve the case when `onAppear` not been called, for example, some transaction indeterminate state, SwiftUI :)
-        if imageManager.isFirstPrefetch {
-            imageManager.prefetch()
+        // This solve the case when WebImage created with new URL, but `onAppear` not been called, for example, some transaction indeterminate state, SwiftUI :)
+        if imageManager.isFirstLoad {
+            imageManager.load()
         }
         return Group {
             if imageManager.image != nil {
@@ -100,7 +99,7 @@ public struct WebImage : View {
                 setupPlaceholder()
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .onAppear {
-                    // load remote image when first appear
+                    // Load remote image when first appear
                     if self.imageManager.isFirstLoad {
                         self.imageManager.load()
                         return
@@ -267,9 +266,32 @@ extension WebImage {
     
     /// Provide the action when image load successes.
     /// - Parameters:
+    ///   - action: The action to perform. The first arg is the loaded image. If `action` is `nil`, the call has no effect.
+    /// - Returns: A view that triggers `action` when this image load successes.
+    public func onSuccess(perform action: @escaping (PlatformImage) -> Void) -> WebImage {
+        let action = action
+        self.imageManager.successBlock = { image, _, _ in
+            action(image)
+        }
+        return self
+    }
+    
+    /// Provide the action when image load successes.
+    /// - Parameters:
     ///   - action: The action to perform. The first arg is the loaded image, the second arg is the cache type loaded from. If `action` is `nil`, the call has no effect.
     /// - Returns: A view that triggers `action` when this image load successes.
-    public func onSuccess(perform action: ((PlatformImage, SDImageCacheType) -> Void)? = nil) -> WebImage {
+    public func onSuccess(perform action: @escaping (PlatformImage, SDImageCacheType) -> Void) -> WebImage {
+        self.imageManager.successBlock = { image, _, cacheType in
+            action(image, cacheType)
+        }
+        return self
+    }
+    
+    /// Provide the action when image load successes.
+    /// - Parameters:
+    ///   - action: The action to perform. The first arg is the loaded image, the second arg is the loaded image data, the third arg is the cache type loaded from. If `action` is `nil`, the call has no effect.
+    /// - Returns: A view that triggers `action` when this image load successes.
+    public func onSuccess(perform action: ((PlatformImage, Data?, SDImageCacheType) -> Void)? = nil) -> WebImage {
         self.imageManager.successBlock = action
         return self
     }

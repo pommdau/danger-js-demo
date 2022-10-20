@@ -1,0 +1,13 @@
+{
+  "packageRules": [
+    {
+      "groupName": "SDWebImage",
+      "managers": [
+        "cocoapods"
+      ],
+      "packageNames": [
+        "SDWebImageSwiftUI",
+      ]
+    }
+  ]
+}

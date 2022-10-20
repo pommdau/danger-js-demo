@@ -15,49 +15,43 @@ import SDWebImage
 public final class ImageManager : ObservableObject {
     /// loaded image, note when progressive loading, this will published multiple times with different partial image
     @Published public var image: PlatformImage?
+    /// loaded image data, may be nil if hit from memory cache. This will only published once even on incremental image loading
+    @Published public var imageData: Data?
+    /// loaded image cache type, .none means from network
+    @Published public var cacheType: SDImageCacheType = .none
     /// loading error, you can grab the error code and reason listed in `SDWebImageErrorDomain`, to provide a user interface about the error reason
     @Published public var error: Error?
-    /// whether network is loading or cache is querying, should only be used for indicator binding
-    @Published public var isLoading: Bool = false
-    /// network progress, should only be used for indicator binding
-    @Published public var progress: Double = 0
     /// true means during incremental loading
     @Published public var isIncremental: Bool = false
+    /// A observed object to pass through the image manager loading status to indicator
+    @Published public var indicatorStatus = IndicatorStatus()
     
-    var manager: SDWebImageManager
     weak var currentOperation: SDWebImageOperation? = nil
-    var isFirstLoad: Bool = true // false after first call `load()`
-    var isFirstPrefetch: Bool = true // false after first call `prefetch()`
-    
-    var url: URL?
-    var options: SDWebImageOptions
-    var context: [SDWebImageContextOption : Any]?
-    var successBlock: ((PlatformImage, SDImageCacheType) -> Void)?
+
+    var currentURL: URL?
+    var successBlock: ((PlatformImage, Data?, SDImageCacheType) -> Void)?
     var failureBlock: ((Error) -> Void)?
     var progressBlock: ((Int, Int) -> Void)?
     
-    /// Create a image manager for loading the specify url, with custom options and context.
+    public init() {}
+    
+    /// Start to load the url operation
     /// - Parameter url: The image url
     /// - Parameter options: The options to use when downloading the image. See `SDWebImageOptions` for the possible values.
     /// - Parameter context: A context contains different options to perform specify changes or processes, see `SDWebImageContextOption`. This hold the extra objects which `options` enum can not hold.
-    public init(url: URL?, options: SDWebImageOptions = [], context: [SDWebImageContextOption : Any]? = nil) {
-        self.url = url
-        self.options = options
-        self.context = context
-        if let manager = context?[.customManager] as? SDWebImageManager {
-            self.manager = manager
+    public func load(url: URL?, options: SDWebImageOptions = [], context: [SDWebImageContextOption : Any]? = nil) {
+        let manager: SDWebImageManager
+        if let customManager = context?[.customManager] as? SDWebImageManager {
+            manager = customManager
         } else {
-            self.manager = .shared
+            manager = .shared
         }
-    }
-    
-    /// Start to load the url operation
-    public func load() {
-        isFirstLoad = false
-        if currentOperation != nil {
+        if (currentOperation != nil && currentURL == url) {
             return
         }
-        self.isLoading = true
+        currentURL = url
+        indicatorStatus.isLoading = true
+        indicatorStatus.progress = 0
         currentOperation = manager.loadImage(with: url, options: options, context: context, progress: { [weak self] (receivedSize, expectedSize, _) in
             guard let self = self else {
                 return
@@ -69,7 +63,7 @@ public final class ImageManager : ObservableObject {
                 progress = 0
             }
             DispatchQueue.main.async {
-                self.progress = progress
+                self.indicatorStatus.progress = progress
             }
             self.progressBlock?(receivedSize, expectedSize)
         }) { [weak self] (image, data, error, cacheType, finished, _) in
@@ -87,10 +81,12 @@ public final class ImageManager : ObservableObject {
             self.error = error
             self.isIncremental = !finished
             if finished {
-                self.isLoading = false
-                self.progress = 1
+                self.imageData = data
+                self.cacheType = cacheType
+                self.indicatorStatus.isLoading = false
+                self.indicatorStatus.progress = 1
                 if let image = image {
-                    self.successBlock?(image, cacheType)
+                    self.successBlock?(image, data, cacheType)
                 } else {
                     self.failureBlock?(error ?? NSError())
                 }
@@ -103,35 +99,15 @@ public final class ImageManager : ObservableObject {
         if let operation = currentOperation {
             operation.cancel()
             currentOperation = nil
-            isLoading = false
         }
-    }
-    
-    /// Prefetch the initial state of image, currently query the memory cache only
-    func prefetch() {
-        isFirstPrefetch = false
-        var options = self.options
-        if options.contains(.fromLoaderOnly) {
-            // If user indeed ignore cache, don't do prefetch
-            return
-        }
-        // Use `.fromCacheOnly` to query cache only
-        options.insert(.fromCacheOnly)
-        var context = self.context ?? [:]
-        context[.queryCacheType] = SDImageCacheType.memory.rawValue
-        // Use `.queryCacheType` to query memory cache only
-        manager.loadImage(with: url, options: options, context: context, progress: nil) { (image, data, error, cacheType, finished, imageUrl) in
-            // This will callback immediately
-            self.image = image
-            if let image = image {
-                self.successBlock?(image, cacheType)
-            }
-        }
+        indicatorStatus.isLoading = false
+        currentURL = nil
     }
     
 }
 
 // Completion Handler
+@available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
 extension ImageManager {
     /// Provide the action when image load fails.
     /// - Parameters:
@@ -142,8 +118,8 @@ extension ImageManager {
     
     /// Provide the action when image load successes.
     /// - Parameters:
-    ///   - action: The action to perform. The first arg is the loaded image, the second arg is the cache type loaded from. If `action` is `nil`, the call has no effect.
-    public func setOnSuccess(perform action: ((PlatformImage, SDImageCacheType) -> Void)? = nil) {
+    ///   - action: The action to perform. The first arg is the loaded image, the second arg is the loaded image data, the third arg is the cache type loaded from. If `action` is `nil`, the call has no effect.
+    public func setOnSuccess(perform action: ((PlatformImage, Data?, SDImageCacheType) -> Void)? = nil) {
         self.successBlock = action
     }
     
@@ -154,6 +130,3 @@ extension ImageManager {
         self.progressBlock = action
     }
 }
-
-// Indicator Reportor
-extension ImageManager: IndicatorReportable {}

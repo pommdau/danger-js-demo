@@ -6,6 +6,6 @@ target 'GitHubPlayground' do
   use_frameworks!
 
   # Pods for GitHubPlayground
-  pod 'SDWebImageSwiftUI', '1.3.3'
+  pod 'SDWebImageSwiftUI', '2.2.1'
 
 end

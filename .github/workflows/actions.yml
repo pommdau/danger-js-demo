@@ -1,21 +1,14 @@
-name: actions
+name: Danger JS
 on: [pull_request]
 
 jobs:
-  actions-ci:
+  build:
+    name: Danger JS
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Install yarn
-      run: npm i -g yarn
-
-    - name: Install Dependencies
-      run: yarn
-
-    - name: Run Danger
-      run: yarn danger:ci
+    - uses: actions/checkout@v3
+    - name: Danger
+      uses: danger/danger-js@11.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DANGER_DISABLE_TRANSPILATION: true

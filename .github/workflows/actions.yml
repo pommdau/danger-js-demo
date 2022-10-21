@@ -1,0 +1,21 @@
+name: actions
+on: [pull_request]
+
+jobs:
+  actions-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Install yarn
+      run: npm i -g yarn
+
+    - name: Install Dependencies
+      run: yarn
+
+    - name: Run Danger
+      run: yarn danger:ci
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

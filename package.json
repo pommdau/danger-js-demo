@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "danger": "danger ci"
+  }
+}

@@ -4,10 +4,10 @@ if (danger.github.pr.title.includes('[WIP]')) {
   fail("Should NOT inclued 'WIP' in your PR title");
 }
 
-if (!danger.github.pr.assignee) {
-  warn("Should select PR reviewer");
-  isAllCheckPassed = false;
-}
+// if (!danger.github.pr.assignee) {
+//   warn("Should select PR reviewer");
+//   isAllCheckPassed = false;
+// }
 
 const hasIssuesNumber = /#[0-9]/.test(danger.github.pr.title);
 if (!hasIssuesNumber) {

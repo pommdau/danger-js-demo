@@ -1,5 +1,3 @@
-import { message, warn, fail, markdown } from "danger"
-
 let isAllCheckPassed = true;
 
 // ===== Title =====

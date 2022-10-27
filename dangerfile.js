@@ -45,16 +45,16 @@ if (danger.github.pr.changed_files > 10 ) {
 
 // ===== Commit Message =====
 
-// コミットメッセージが短すぎる場合は警告を出す
-for (c of danger.github.commits) {
-    if (c.commit.message.length < 5) {
-        warn("There is a commit with very short message: " +  c.commit.message);
-        isAllCheckPassed = false;
-    }
-}
+// // コミットメッセージが短すぎる場合は警告を出す
+// for (c of danger.github.commits) {
+//     if (c.commit.message.length < 5) {
+//         warn("There is a commit with very short message: " +  c.commit.message);
+//         isAllCheckPassed = false;
+//     }
+// }
 
-markdown("base: " + danger.github.pr.base.ref);
-markdown("head: " + danger.github.pr.head.ref);
+warn("base: " + danger.github.pr.base.ref);
+warn("head: " + danger.github.pr.head.ref);
 
 // ===== Branch =====
 

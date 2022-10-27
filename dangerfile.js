@@ -59,7 +59,7 @@ for (const template_branch_name of template_branch_names) {
 }
 
 if (!is_valid_branch_name) {
-  warn(`ブランチ名が不正です: ${head_branch}\n次のいずれかの名称を使用してください: ${valid_branch_names.join('/')}`);
+  warn(`ブランチ名が不正です: ${head_branch_name}\n次のいずれかの名称を使用してください: ${valid_branch_names.join('/')}`);
 }
 
 // ===== Result =====

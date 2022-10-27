@@ -53,8 +53,8 @@ for (c of danger.github.commits) {
     }
 }
 
-message("base: " + danger.github.pr.base.ref)
-message("head: " + danger.github.pr.head.ref)
+markdown("base: " + danger.github.pr.base.ref)
+markdown("head: " + danger.github.pr.head.ref)
 
 // ===== Branch =====
 

@@ -1,8 +1,6 @@
 let isAllCheckPassed = true;
 
-///////////////////
-// タイトルのチェック
-///////////////////
+// ===== Title =====
 
 // PRのタイトルに[WIP]が含まれる場合は、作業中なのでfailさせる
 if (danger.github.pr.title.includes('[WIP]')) {
@@ -16,9 +14,7 @@ if (!hasIssuesNumber) {
   isAllCheckPassed = false;
 }
 
-//////////////////
-// PR設定のチェック
-//////////////////
+// ===== Settings =====
 
 // PRにレビュアーが指定されているかどうか
 if (!danger.github.pr.reviews) {
@@ -32,9 +28,7 @@ if (!danger.github.pr.assignee) {
   isAllCheckPassed = false;
 }
 
-/////////////////
-// 変更量のチェック
-/////////////////
+// ===== Changing amount =====
 
 // 500行以上の追加・削除の変更があったかどうか
 const diffSize = Math.max(danger.github.pr.additions, danger.github.pr.deletions);
@@ -49,9 +43,45 @@ if (danger.github.pr.changed_files > 10 ) {
   isAllCheckPassed = false;
 }
 
-/////////////////
-// 全体の結果の出力
-/////////////////
+// ===== Commit Message =====
+
+// コミットメッセージが短すぎる場合は警告を出す
+for (c of danger.github.commits) {
+    if (c.commit.message.length < 5) {
+        warn("There is a commit with very short message: " +  c.commit.message)
+        isAllCheckPassed = false;
+    }
+}
+
+message("base: " + danger.github.pr.base.ref)
+message("head: " + danger.github.pr.head.ref)
+
+// ===== Branch =====
+
+// github.branch_for_base
+
+// is_to_master = github.branch_for_base == 'master'
+// is_to_develop = github.branch_for_base == 'develop'
+
+// is_from_develop = github.branch_for_base == 'develop'
+// is_from_feature = 
+
+
+// is_to_release = !!github.branch_for_base.match(/release-[0-9]+\.[0-9]+\.[0-9]/)
+// is_from_release = !!github.branch_for_head.match(/release-[0-9]+\.[0-9]+\.[0-9]/)
+
+// if is_to_master && !is_from_release
+//   warn('masterへmerge出来るのはrelease branchのみです。')
+// end
+
+// if is_to_release
+//   warn('release branchに対してPRを向けないで下さい。develop branchに向けてPRを作成し、develop branchをrelease branchにmergeしてください。')
+// end
+
+warn("")
+
+
+// ===== Result =====
 
 if (isAllCheckPassed) {
   markdown('## All checkes have passed :tada:')

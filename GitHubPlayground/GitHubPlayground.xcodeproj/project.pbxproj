@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,7 @@
 		DA1FC83B290121C600B7DDB9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1FC83A290121C600B7DDB9 /* ContentView.swift */; };
 		DA1FC83D290121C700B7DDB9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA1FC83C290121C700B7DDB9 /* Assets.xcassets */; };
 		DA1FC840290121C700B7DDB9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA1FC83F290121C700B7DDB9 /* Preview Assets.xcassets */; };
+		DAC23662290A5AE400D79BD3 /* BigFileForDebugging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC23661290A5AE400D79BD3 /* BigFileForDebugging.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		DA1FC83A290121C600B7DDB9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DA1FC83C290121C700B7DDB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA1FC83F290121C700B7DDB9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DAC23661290A5AE400D79BD3 /* BigFileForDebugging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigFileForDebugging.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +53,6 @@
 				18B1F78910B1DD387DC0F39F /* Pods-GitHubPlayground.debug.xcconfig */,
 				00762F554B97EFAB47E55734 /* Pods-GitHubPlayground.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -78,6 +79,7 @@
 			children = (
 				DA1FC838290121C600B7DDB9 /* GitHubPlaygroundApp.swift */,
 				DA1FC83A290121C600B7DDB9 /* ContentView.swift */,
+				DAC23661290A5AE400D79BD3 /* BigFileForDebugging.swift */,
 				DA1FC83C290121C700B7DDB9 /* Assets.xcassets */,
 				DA1FC83E290121C700B7DDB9 /* Preview Content */,
 			);
@@ -208,6 +210,7 @@
 			files = (
 				DA1FC83B290121C600B7DDB9 /* ContentView.swift in Sources */,
 				DA1FC839290121C600B7DDB9 /* GitHubPlaygroundApp.swift in Sources */,
+				DAC23662290A5AE400D79BD3 /* BigFileForDebugging.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,3 +1,5 @@
+import { message, warn, fail, markdown } from "danger"
+
 let isAllCheckPassed = true;
 
 // ===== Title =====
@@ -43,41 +45,14 @@ if (danger.github.pr.changed_files > 10 ) {
   isAllCheckPassed = false;
 }
 
-// ===== Commit Message =====
-
-// // コミットメッセージが短すぎる場合は警告を出す
-// for (c of danger.github.commits) {
-//     if (c.commit.message.length < 5) {
-//         warn("There is a commit with very short message: " +  c.commit.message);
-//         isAllCheckPassed = false;
-//     }
-// }
-
-warn("base: " + danger.github.pr.base.ref);
-warn("head: " + danger.github.pr.head.ref);
-
 // ===== Branch =====
-
-// github.branch_for_base
-
-// is_to_master = github.branch_for_base == 'master'
-// is_to_develop = github.branch_for_base == 'develop'
-
-// is_from_develop = github.branch_for_base == 'develop'
-// is_from_feature = 
-
-
-// is_to_release = !!github.branch_for_base.match(/release-[0-9]+\.[0-9]+\.[0-9]/)
-// is_from_release = !!github.branch_for_head.match(/release-[0-9]+\.[0-9]+\.[0-9]/)
-
-// if is_to_master && !is_from_release
-//   warn('masterへmerge出来るのはrelease branchのみです。')
-// end
-
-// if is_to_release
-//   warn('release branchに対してPRを向けないで下さい。develop branchに向けてPRを作成し、develop branchをrelease branchにmergeしてください。')
-// end
-
+// head(例: feature) -> base(例: develop)
+const valid_branch_names = ["release", "master", "main", "develop", "feature", "revert", "hotfix"]
+// base_branch =  danger.github.pr.base.ref
+head_branch =  danger.github.pr.head.ref
+if valid_branch_names.includes(head_branch) {
+  warn(`ブランチ名が不正です: ${head_branch}\n次のいずれかの名称を使用してください: ${valid_branch_names.join('/')}`)
+}
 
 // ===== Result =====
 

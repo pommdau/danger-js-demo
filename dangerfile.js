@@ -48,13 +48,13 @@ if (danger.github.pr.changed_files > 10 ) {
 // コミットメッセージが短すぎる場合は警告を出す
 for (c of danger.github.commits) {
     if (c.commit.message.length < 5) {
-        warn("There is a commit with very short message: " +  c.commit.message)
+        warn("There is a commit with very short message: " +  c.commit.message);
         isAllCheckPassed = false;
     }
 }
 
-markdown("base: " + danger.github.pr.base.ref)
-markdown("head: " + danger.github.pr.head.ref)
+markdown("base: " + danger.github.pr.base.ref);
+markdown("head: " + danger.github.pr.head.ref);
 
 // ===== Branch =====
 
@@ -78,11 +78,9 @@ markdown("head: " + danger.github.pr.head.ref)
 //   warn('release branchに対してPRを向けないで下さい。develop branchに向けてPRを作成し、develop branchをrelease branchにmergeしてください。')
 // end
 
-warn("")
-
 
 // ===== Result =====
 
 if (isAllCheckPassed) {
-  markdown('## All checkes have passed :tada:')
+  markdown('## All checkes have passed :tada:');
 }

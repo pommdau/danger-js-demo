@@ -44,12 +44,22 @@ if (danger.github.pr.changed_files > 10 ) {
 }
 
 // ===== Branch =====
+
 // head(例: feature) -> base(例: develop)
-const valid_branch_names = ["release", "master", "main", "develop", "feature", "revert", "hotfix"]
+const template_branch_names = ["release", "master", "main", "develop", "feature/", "revert/", "hotfix/"];
 // base_branch =  danger.github.pr.base.ref
-head_branch =  danger.github.pr.head.ref
-if valid_branch_names.includes(head_branch) {
-  warn(`ブランチ名が不正です: ${head_branch}\n次のいずれかの名称を使用してください: ${valid_branch_names.join('/')}`)
+head_branch_name =  danger.github.pr.head.ref;
+
+is_valid_branch_name = false
+for (const template_branch_name of template_branch_names) {  
+  if (head_branch_name.startsWith(template_branch_name)) {
+    is_valid_branch_name = true;
+    break;
+  }
+}
+
+if (!is_valid_branch_name) {
+  warn(`ブランチ名が不正です: ${head_branch_name}\n次のいずれかの名称を使用してください: ${valid_branch_names.join('/')}`);
 }
 
 // ===== Result =====

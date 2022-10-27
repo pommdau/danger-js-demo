@@ -46,7 +46,7 @@ if (danger.github.pr.changed_files > 10 ) {
 // ===== Branch =====
 
 // head(例: feature) -> base(例: develop)
-const template_branch_names = ["release", "master", "main", "develop", "feature", "revert", "hotfix"];
+const template_branch_names = ["release", "master", "main", "develop", "feature/", "revert/", "hotfix/"];
 // base_branch =  danger.github.pr.base.ref
 head_branch_name =  danger.github.pr.head.ref;
 
